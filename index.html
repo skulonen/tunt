@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Tunt</title>
+    <link rel="icon" href="icons/tunt-48.png">
+    <link rel="manifest" href="manifest.json" />
+    <script type="importmap">
+      {
+        "imports": {
+          "preact": "https://esm.sh/preact@10.23.1",
+          "preact/": "https://esm.sh/preact@10.23.1/",
+          "htm/preact": "https://esm.sh/htm@3.1.1/preact?external=preact",
+          "calcite-components": "https://js.arcgis.com/calcite-components/3.0.3/calcite.esm.js"
+        }
+      }
+    </script>
+    <style>
+        .custom-theme {
+            --calcite-color-brand: #00dea6;
+            --calcite-color-brand-hover: #00c997;
+            --calcite-color-brand-press: #00b386;
+            --calcite-color-background: #252927;
+            --calcite-color-foreground-1: #282f2c;
+            --calcite-color-foreground-2: #2f3633;
+            --calcite-color-foreground-3: #353b38;
+            --calcite-color-foreground-current: #588572;
+            --calcite-color-info: #38deff;
+            --calcite-color-success: #60fc44;
+            --calcite-color-warning: #ffca38;
+            --calcite-color-danger: #ff3639;
+            --calcite-color-danger-hover: #d93437;
+            --calcite-color-danger-press: #7c1d13;
+            --calcite-color-text-1: #f5fffc;
+            --calcite-color-text-2: #e6fcf6;
+            --calcite-color-text-3: #d6fff0;
+            --calcite-color-text-inverse: #1a1c1b;
+            --calcite-color-text-link: #15e8dd;
+            --calcite-color-border-1: #202422;
+            --calcite-color-border-2: #39473f;
+            --calcite-color-border-3: #2b3d33;
+            --calcite-color-border-input: #242e29;
+            background-color: var(--calcite-color-background);
+
+            --calcite-color-focus: var(--calcite-color-brand);
+        }
+    </style>
+  </head>
+  <body class="calcite-mode-dark custom-theme">
+    <script type="module">
+      import { render } from 'preact';
+      import { html } from 'htm/preact';
+      import 'calcite-components';
+      import { App } from '/js/components/app.js';
+
+      render(html`<${App} />`, document.body);
+    </script>
+  </body>
+</html>

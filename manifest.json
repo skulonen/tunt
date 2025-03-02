@@ -1,0 +1,23 @@
+{
+  "name": "Tunt",
+  "icons": [
+    {
+      "src": "icons/tunt-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "icons/tunt-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#252927",
+  "theme_color": "#00dea6",
+  "description": "A time tracking app",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  }
+}
