@@ -97,10 +97,10 @@ export function App() {
               slot="submenu-item"
               lang="fi"
               valueAsDate=${date}
-              ref=${el => el?.addEventListener('calciteDatePickerChange', event => {
+              oncalciteDatePickerChange=${event => {
                 setDate(event.target.valueAsDate);
                 datePickerRef.current.open = false;
-              })}
+              }}
             />
           </calcite-menu-item>
           ${saveTimeout && html`<calcite-loader inline scale="s" />`}
@@ -109,20 +109,20 @@ export function App() {
         <calcite-menu slot="content-end">
           <calcite-menu-item
             active=${tab == 'home'}
-            ref=${el => el?.addEventListener('calciteMenuItemSelect', () => setTab('home'))}
+            oncalciteMenuItemSelect=${() => setTab('home')}
             icon-start="home"
             text="Home"
           />
           ${directory && html`
             <calcite-menu-item
               active=${tab == 'day'}
-              ref=${el => el?.addEventListener('calciteMenuItemSelect', () => setTab('day'))}
+              oncalciteMenuItemSelect=${() => setTab('day')}
               icon-start="clock"
               text="Day"
             />
             <calcite-menu-item
               active=${tab == 'summary'}
-              ref=${el => el?.addEventListener('calciteMenuItemSelect', () => setTab('summary'))}
+              oncalciteMenuItemSelect=${() => setTab('summary')}
               icon-start="filter"
               text="Summary"
             />

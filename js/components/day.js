@@ -145,32 +145,24 @@ export function Day({
           >
             <calcite-input
               value=${entry.start}
-              ref=${el => el?.addEventListener('calciteInputInput', event => {
-                updateEntry(row, { start: event.target.value });
-              })}
+              oncalciteInputInput=${event => updateEntry(row, { start: event.target.value })}
               icon="clock"
               style="flex: 0 0 98px"
             />
             <calcite-input
               value=${entry.end}
-              ref=${el => el?.addEventListener('calciteInputInput', event => {
-                updateEntry(row, { end: event.target.value });
-              })}
+              oncalciteInputInput=${event => updateEntry(row, { end: event.target.value })}
               style="flex: 0 0 70px"
             />
             <calcite-input
               value=${entry.task}
-              ref=${el => el?.addEventListener('calciteInputInput', event => {
-                updateEntry(row, { task: event.target.value });
-              })}
+              oncalciteInputInput=${event => updateEntry(row, { task: event.target.value })}
               icon="tag"
               style="flex: 0 1 160px"
             />
             <calcite-input
               value=${entry.description}
-              ref=${el => el?.addEventListener('calciteInputInput', event => {
-                updateEntry(row, { description: event.target.value });
-              })}
+              oncalciteInputInput=${event => updateEntry(row, { description: event.target.value })}
               icon="pencil"
               style="flex: 1 1 160px"
             />
