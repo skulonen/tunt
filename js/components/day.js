@@ -1,18 +1,32 @@
 import { useState, useRef, useEffect, useMemo } from 'preact/hooks';
 import { html } from 'htm/preact';
 
-import { calculateTotalMinutes, formatMinutes, getEntryId } from '../util.js';
+import { calculateTotalMinutes, formatMinutes } from '../time.js';
+import { nextEntryId } from '../counters.js';
 
 export function Day({
-  entries,
-  onEntriesChange
+  storage,
+  date
 }) {
+  const [entries, setEntries] = useState([]);
   const [focusedCell, setFocusedCell] = useState([0, 0]);
   const listRef = useRef();
+  const saveHandleRef = useRef();
 
   const totalTime = useMemo(() => {
     return formatMinutes(calculateTotalMinutes(entries));
   }, [entries]);
+
+  useEffect(() => {
+    setEntries([]);
+    storage.loadEntries(date).then(setEntries);
+
+    // Called when storage or date is about to change, or the component is about to unload
+    return () => {
+      // If a save countdown is currently in progress, cancel it and save immediately
+      saveHandleRef.current?.saveNow();
+    };
+  }, [storage, date]);
 
   useEffect(() => {
     const [row, column] = focusedCell;
@@ -40,44 +54,25 @@ export function Day({
     setFocusedCell([row, column]);
   }
 
-  // Functions for modifying the entry table
-
-  const modifyEntries = (callback) => {
+  function modifyEntries(callback) {
     const newEntries = [...entries];
     callback(newEntries);
-    onEntriesChange(newEntries);
-  };
+    setEntries(newEntries);
 
-  const addEntry = (row) => modifyEntries(entries => {
-    entries.splice(row, 0, { id: getEntryId() });
-    setFocusedRow(row);
-  });
+    // Defer saving until user has paused
 
-  const duplicateEntry = (row, props) => modifyEntries(entries => {
-    const newEntry = {
-      ...entries[row],
-      start: null,
-      end: null,
-      id: getEntryId()
+    saveHandleRef.current?.cancel();
+    function saveNow() {
+      cancel();
+      storage.saveEntries(date, newEntries);
     };
-    entries.splice(row + 1, 0, newEntry);
-    setFocusedRow(row + 1);
-  });
-
-  const removeEntry = (row) => modifyEntries(entries => {
-    entries.splice(row, 1);
-    setFocusedRow(row == entries.length ? row - 1 : row);
-  });
-
-  const updateEntry = (row, props) => modifyEntries(entries => {
-    entries[row] = { ...entries[row], ...props };
-  });
-
-  const moveEntry = (sourceRow, targetRow) => modifyEntries(entries => {
-    const [entry] = entries.splice(sourceRow, 1);
-    entries.splice(targetRow, 0, entry);
-    setFocusedRow(targetRow);
-  });
+    function cancel() {
+      clearTimeout(timeoutHandle);
+      saveHandleRef.current = null;
+    }
+    const timeoutHandle = setTimeout(saveNow, 3000);
+    saveHandleRef.current = { saveNow, cancel };
+  }
 
   function handleKeyDown(event) {
     const { key, shiftKey, ctrlKey, altKey } = event;
@@ -130,6 +125,39 @@ export function Day({
 
     event.preventDefault();
   }
+
+  // Functions for modifying the entry table
+
+  const addEntry = (row) => modifyEntries(entries => {
+    entries.splice(row, 0, { id: nextEntryId() });
+    setFocusedRow(row);
+  });
+
+  const duplicateEntry = (row, props) => modifyEntries(entries => {
+    const newEntry = {
+      ...entries[row],
+      start: null,
+      end: null,
+      id: nextEntryId()
+    };
+    entries.splice(row + 1, 0, newEntry);
+    setFocusedRow(row + 1);
+  });
+
+  const removeEntry = (row) => modifyEntries(entries => {
+    entries.splice(row, 1);
+    setFocusedRow(row == entries.length ? row - 1 : row);
+  });
+
+  const updateEntry = (row, props) => modifyEntries(entries => {
+    entries[row] = { ...entries[row], ...props };
+  });
+
+  const moveEntry = (sourceRow, targetRow) => modifyEntries(entries => {
+    const [entry] = entries.splice(sourceRow, 1);
+    entries.splice(targetRow, 0, entry);
+    setFocusedRow(targetRow);
+  });
 
   return html`
     <calcite-panel>

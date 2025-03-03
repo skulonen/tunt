@@ -1,32 +1,30 @@
-export function parseTime(timeString) {
+export function parseMinutes(timeString) {
   if (!timeString) {
-    return null;
+    return NaN;
   }
   let index = timeString.indexOf(':');
   if (index == -1) {
     index = timeString.indexOf('.');
     if (index == -1) {
-      return null;
+      return NaN;
     }
   }
   const hours = parseInt(timeString.substring(0, index));
   const minutes = parseInt(timeString.substring(index + 1));
   if (isNaN(hours) || isNaN(minutes)) {
-    return null;
+    return NaN;
   }
-  return { hours, minutes };
+  return hours * 60 + minutes;
 }
 
 export function calculateTotalMinutes(entries) {
   return entries.reduce((acc, entry) => {
-    const startTime = parseTime(entry.start);
-    const endTime = parseTime(entry.end);
-    if (!startTime || !endTime) {
+    const startMinutes = parseMinutes(entry.start);
+    const endMinutes = parseMinutes(entry.end);
+    if (isNaN(startMinutes) || isNaN(endMinutes)) {
       return acc;
     }
-    return acc +
-      (endTime.hours - startTime.hours) * 60 +
-      (endTime.minutes - startTime.minutes);
+    return acc + (endMinutes - startMinutes);
   }, 0);
 }
 
@@ -40,16 +38,4 @@ export function formatMinutes(totalMinutes) {
     return `${hours} h`;
   }
   return `${hours} h ${minutes} min`;
-}
-
-export function getFileName(date) {
-  const dateString = date.getFullYear() + '-' +
-    String(date.getMonth() + 1).padStart(2, '0') + '-' +
-    String(date.getDate()).padStart(2, '0');
-  return dateString + '.json';
-}
-
-let id = 0;
-export function getEntryId() {
-  return id++;
 }

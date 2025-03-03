@@ -1,19 +1,21 @@
 import { useState } from 'preact/hooks';
 import { html } from 'htm/preact';
 
+import { Storage } from '../storage.js';
+
 export function Home({
-  directory,
-  onDirectoryChange
+  storage,
+  onStorageChange
 }) {
   async function pickDirectory() {
     try {
       const directory = await showDirectoryPicker();
-      onDirectoryChange(directory);
+      onStorageChange(new Storage(directory));
     } catch {}
   }
 
   function renderContent() {
-    if (!directory) {
+    if (!storage) {
       return html`
         <div style="display: flex; justify-content: center; padding: 1rem">
           <calcite-button
@@ -32,7 +34,7 @@ export function Home({
         <calcite-label>
           Storage folder
           <calcite-input
-            value=${directory.name}
+            value=${storage.directory.name}
             read-only
           >
             <calcite-button
