@@ -133,15 +133,21 @@ export function Day({
   // Functions for modifying the entry table
 
   const addEntry = (row) => modifyEntries(entries => {
-    entries.splice(row, 0, { id: nextEntryId() });
+    entries.splice(row, 0, {
+      id: nextEntryId(),
+      start: "",
+      end: "",
+      task: "",
+      description: ""
+    });
     setFocusedRow(row);
   });
 
   const duplicateEntry = (row, props) => modifyEntries(entries => {
     const newEntry = {
       ...entries[row],
-      start: null,
-      end: null,
+      start: "",
+      end: "",
       id: nextEntryId()
     };
     entries.splice(row + 1, 0, newEntry);
