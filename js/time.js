@@ -39,3 +39,15 @@ export function formatMinutes(totalMinutes) {
   }
   return `${hours} h ${minutes} min`;
 }
+
+export function validateTimes(entry, previousEntry) {
+  const startMinutes = parseMinutes(entry.start);
+  const endMinutes = parseMinutes(entry.end);
+  const previousEndMinutes = parseMinutes(previousEntry?.end);
+
+  const isStartValid = !isNaN(startMinutes)
+    && (isNaN(previousEndMinutes) || startMinutes >= previousEndMinutes);
+  const isEndValid = !isNaN(endMinutes)
+    && (isNaN(startMinutes) || endMinutes > startMinutes);
+  return { isStartValid, isEndValid };
+}

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'preact/hooks';
 import { html } from 'htm/preact';
 
-import { calculateTotalMinutes, formatMinutes } from '../time.js';
+import { calculateTotalMinutes, formatMinutes, validateTimes } from '../time.js';
 import { nextEntryId } from '../counters.js';
 
 export function Day({
@@ -15,6 +15,10 @@ export function Day({
 
   const totalTime = useMemo(() => {
     return formatMinutes(calculateTotalMinutes(entries));
+  }, [entries]);
+
+  const validationResults = useMemo(() => {
+    return entries.map((entry, i) => validateTimes(entry, entries[i - 1]));
   }, [entries]);
 
   useEffect(() => {
@@ -174,12 +178,14 @@ export function Day({
             <calcite-input
               value=${entry.start}
               oncalciteInputInput=${event => updateEntry(row, { start: event.target.value })}
+              status=${validationResults[row].isStartValid ? 'idle' : 'invalid'}
               icon="clock"
               style="flex: 0 0 98px"
             />
             <calcite-input
               value=${entry.end}
               oncalciteInputInput=${event => updateEntry(row, { end: event.target.value })}
+              status=${validationResults[row].isEndValid ? 'idle' : 'invalid'}
               style="flex: 0 0 70px"
             />
             <calcite-input
