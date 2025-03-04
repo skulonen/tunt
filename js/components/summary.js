@@ -156,7 +156,7 @@ export function Summary({
 
   return html`
     <calcite-panel>
-      <calcite-block-group>
+      <calcite-block-group key=${groupMode}>
         ${renderContent()}
       </calcite-block-group>
       <div slot="footer-start" style="display: flex; align-items: center; gap: 0.75rem">
