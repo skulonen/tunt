@@ -68,6 +68,7 @@ export function Summary({
 
     const dateGroups = mapByDate(entriesWithDates, ([date, dateEntries]) => ({
       date,
+      totalTime: formatMinutes(calculateTotalMinutes(dateEntries)),
       taskGroups: mapByTask(dateEntries, ([task, taskEntries]) => ({
         task,
         ...aggregateEntries(taskEntries)
@@ -76,6 +77,7 @@ export function Summary({
 
     const taskGroups = mapByTask(entriesWithDates, ([task, taskEntries]) => ({
       task,
+      totalTime: formatMinutes(calculateTotalMinutes(taskEntries)),
       dateGroups: mapByDate(taskEntries, ([date, dateEntries]) => ({
         date,
         ...aggregateEntries(dateEntries)
@@ -93,6 +95,7 @@ export function Summary({
           collapsible
           open
           heading=${dateGroup.date}
+          description=${'Total time: ' + dateGroup.totalTime}
           icon-start="calendar"
         >
           ${dateGroup.taskGroups.map(taskGroup => html`
@@ -125,6 +128,7 @@ export function Summary({
           collapsible
           open
           heading=${taskGroup.task}
+          description=${'Total time: ' + taskGroup.totalTime}
           icon-start="tag"
         >
           ${taskGroup.dateGroups.map(dateGroup => html`
