@@ -9,7 +9,7 @@ export function Home({
 }) {
   async function pickDirectory() {
     try {
-      const directory = await showDirectoryPicker();
+      const directory = await showDirectoryPicker({ mode: 'readwrite' });
       onStorageChange(new Storage(directory));
     } catch {}
   }
