@@ -12,34 +12,60 @@ export function App() {
   const [storage, setStorage] = useState();
   const [date, setDate] = useState(initialDate);
 
-  const datePickerRef = useRef();
-
   const dateString = date.toLocaleDateString('fi', {
     weekday: 'short',
     month: 'numeric',
     day: 'numeric'
   });
 
+  function changeDateRelative(offset) {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + offset);
+    setDate(newDate);
+  }
+
   return html`
     <calcite-shell>
 
+      <calcite-popover
+        reference-element="date-picker-action"
+        placement="bottom-start"
+        auto-close
+      >
+        <calcite-date-picker
+          lang="fi"
+          valueAsDate=${date}
+          oncalciteDatePickerChange=${event => {
+            setDate(event.target.valueAsDate);
+            event.target.parentElement.open = false;
+          }}
+        />
+      </calcite-popover>
+
       <calcite-navigation slot="header" style="--calcite-color-focus: transparent">
-        <calcite-menu slot="content-start">
-          <calcite-menu-item
+        <calcite-action-bar
+          slot="content-start"
+          layout="horizontal"
+          scale="l"
+          expand-disabled
+        >
+          <calcite-action
+            icon="chevron-left"
+            scale="l"
+            onClick=${() => changeDateRelative(-1)}
+          />
+          <calcite-action
+            id="date-picker-action"
             text=${dateString}
-            ref=${datePickerRef}
-          >
-            <calcite-date-picker
-              slot="submenu-item"
-              lang="fi"
-              valueAsDate=${date}
-              oncalciteDatePickerChange=${event => {
-                setDate(event.target.valueAsDate);
-                datePickerRef.current.open = false;
-              }}
-            />
-          </calcite-menu-item>
-        </calcite-menu>
+            text-enabled
+            scale="l"
+          />
+          <calcite-action
+            icon="chevron-right"
+            scale="l"
+            onClick=${() => changeDateRelative(1)}
+          />
+        </calcite-action-bar>
 
         <calcite-menu slot="content-end">
           <calcite-menu-item
