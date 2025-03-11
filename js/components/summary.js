@@ -5,7 +5,8 @@ import { calculateTotalMinutes, formatMinutes } from '../time.js';
 
 export function Summary({
   storage,
-  date
+  date,
+  onError
 }) {
   const [dateGroups, setDateGroups] = useState([]);
   const [taskGroups, setTaskGroups] = useState([]);
@@ -24,7 +25,8 @@ export function Summary({
   }, [date]);
 
   useEffect(() => {
-    loadWeekEntries();
+    loadWeekEntries()
+      .catch(error => onError(error, 'Failed to load entries'));
   }, [weekDates]);
 
   async function loadWeekEntries() {

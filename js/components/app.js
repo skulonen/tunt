@@ -4,6 +4,7 @@ import { html } from 'htm/preact';
 import { Home } from './home.js';
 import { Day } from './day.js';
 import { Summary } from './summary.js';
+import { nextErrorId } from '../counters.js';
 
 const initialDate = new Date();
 
@@ -11,6 +12,7 @@ export function App() {
   const [tab, setTab] = useState('home');
   const [storage, setStorage] = useState();
   const [date, setDate] = useState(initialDate);
+  const [notifications, setNotifications] = useState([]);
 
   const dateString = date.toLocaleDateString('fi', {
     weekday: 'short',
@@ -22,6 +24,15 @@ export function App() {
     const newDate = new Date(date);
     newDate.setDate(newDate.getDate() + offset);
     setDate(newDate);
+  }
+
+  function handleError(error, message) {
+    console.error(error);
+    const notification = {
+      message: message ?? 'An error occurred',
+      id: nextErrorId()
+    };
+    setNotifications([...notifications, notification]);
   }
 
   return html`
@@ -101,14 +112,33 @@ export function App() {
         <${Day}
           storage=${storage}
           date=${date}
+          onError=${handleError}
         />
       `}
       ${tab == 'summary' && html`
         <${Summary}
           storage=${storage}
           date=${date}
+          onError=${handleError}
         />
       `}
+
+      ${notifications.map(({ message, id }, i) => html`
+        <calcite-alert
+          key=${id}
+          open
+          auto-close
+          icon="exclamation-mark-triangle"
+          kind="danger"
+          oncalciteAlertClose=${() => {
+            const newNotifications = [...notifications];
+            newNotifications.splice(i, 1);
+            setNotifications(newNotifications);
+          }}
+        >
+          <div slot="message">${message}</div>
+        </calcite-alert>
+      `)}
     </calcite-shell>
   `;
 }

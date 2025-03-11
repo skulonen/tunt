@@ -6,7 +6,8 @@ import { nextEntryId } from '../counters.js';
 
 export function Day({
   storage,
-  date
+  date,
+  onError
 }) {
   const [entries, setEntries] = useState([]);
   const [focusedCell, setFocusedCell] = useState([0, 0]);
@@ -23,7 +24,9 @@ export function Day({
 
   useEffect(() => {
     setEntries([]);
-    storage.loadEntries(date).then(setEntries);
+    storage.loadEntries(date)
+      .then(setEntries)
+      .catch(error => onError(error, 'Failed to load entries'));
 
     // Called when storage or date is about to change, or the component is about to unload
     return () => {
@@ -68,7 +71,8 @@ export function Day({
     saveHandleRef.current?.cancel();
     function saveNow() {
       cancel();
-      storage.saveEntries(date, newEntries);
+      storage.saveEntries(date, newEntries)
+        .catch(error => onError(error, 'Failed to save entries'));
     };
     function cancel() {
       clearTimeout(timeoutHandle);
