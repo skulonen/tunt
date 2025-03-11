@@ -1,4 +1,3 @@
-import { useState } from 'preact/hooks';
 import { html } from 'htm/preact';
 
 import { Storage } from '../storage.js';

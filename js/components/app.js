@@ -1,4 +1,4 @@
-import { useState, useRef } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { html } from 'htm/preact';
 
 import { Home } from './home.js';
